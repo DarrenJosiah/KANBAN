@@ -42,9 +42,12 @@ function  Board() {
 
 
     // Drag and Drop (4) functionality
+    const [draggedItem, setDraggedItem] = useState(null);
+    const [column, setColumn] = useState(null);
+
     function handleDrag(e) {
-        let draggedItem = e.target;
-        console.log(draggedItem);
+        setDraggedItem(e.target.textContent);
+        // console.log(draggedItem);
     }
 
     function handleDragOver(e) {
@@ -52,11 +55,47 @@ function  Board() {
     }
 
     function handleDragEnter(column) {
-        console.log(column);
+        setColumn(column);
+        console.log("Drag enter column is " + column);
     }
 
     function handleDrop(e) {
         e.preventDefault();
+
+        console.log('Dropped, draggedItem is ' + draggedItem);
+        console.log('Dropped, column is ' + column);
+
+        // Add item to dropped column
+        let _array;
+        switch (column) {
+            // Set new copy of array
+
+            case 'Backlog':
+                _array = [...backlogListArray];
+                _array.unshift(draggedItem);
+                setBacklogListArray(_array);
+                break;
+
+            case 'Progress':
+                _array = [...progressListArray];
+                _array.unshift(draggedItem);
+                setProgressListArray(_array);
+                break;
+
+            case 'Complete':
+                _array = [...completeListArray];
+                _array.unshift(draggedItem);
+                setCompleteListArray(_array);
+                break;
+
+            case 'OnHold':
+                _array = [...completeListArray];
+                _array.unshift(draggedItem);
+                setOnHoldListArray(_array);
+                break;
+        }
+        
+        // TODO – Remove text from old array
     }
 
   return (
@@ -145,7 +184,7 @@ function  Board() {
                                 draggable
                                 onDragStart={handleDrag}
                                 onDragOver={handleDragOver}
-                                onDragEnter={() => handleDragEnter('On Hold')}
+                                onDragEnter={() => handleDragEnter('OnHold')}
                                 onDrop={handleDrop}>
                                 {task}
                             </p>
