@@ -60,9 +60,9 @@ function  Board() {
     }
 
   return (
-    <div className='flex justify-evenly items-start'>
+    <div className='flex justify-evenly items-start flex-wrap'>
         {/* Backlog */}
-        <div className="w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div className="m-5 w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <h5 className="select-none text-center py-1 bg-orange-500 rounded-lg mb-5 text-4xl font-bold tracking-tight text-gray-100 dark:text-white">
                 Backlog
             </h5>
@@ -86,7 +86,7 @@ function  Board() {
         </div>
  
         {/* Progress */}
-        <div className="w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div className="sm:my-5 md:m-5 w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <h5 className="select-none text-center py-1 bg-blue-500 rounded-lg mb-5 text-4xl font-bold tracking-tight text-gray-100 dark:text-white">
                 Progress
             </h5>
@@ -110,7 +110,7 @@ function  Board() {
         </div>
  
         {/* Complete */}
-        <div className="w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div className="sm:my-5 md:m-5 w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <h5 className="select-none text-center py-1 bg-green-500 rounded-lg mb-5 text-4xl font-bold tracking-tight text-gray-100 dark:text-white">
                 Complete
             </h5>
@@ -134,7 +134,7 @@ function  Board() {
         </div>
  
         {/* On Hold */}
-        <div className="w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div className="sm:my-5 md:m-5 w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <h5 className="select-none text-center py-1 bg-red-500 rounded-lg mb-5 text-4xl font-bold tracking-tight text-gray-100 dark:text-white">
                 On Hold
             </h5>

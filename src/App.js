@@ -7,7 +7,7 @@ import Title from './components/Title';
 function App() {
   return (
     <>
-      <img className='absolute -z-10' src={'/MyImages/image2.jpg'} />
+      <img className='absolute -z-10 object-fit h-full w-full' src={'/MyImages/image2.jpg'} />
       <Title />
       <Board />
   
