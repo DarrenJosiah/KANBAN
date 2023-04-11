@@ -43,31 +43,40 @@ function  Board() {
 
     // Drag and Drop (4) functionality
     const [draggedItem, setDraggedItem] = useState(null);
-    const [column, setColumn] = useState(null);
+    const [initialColumn, setInitialColumn] = useState(null);
+    const [droppedColumn, setDroppedColumn] = useState(null);
 
-    function handleDrag(e) {
+    function handleDrag(e, initialColumn) {
         setDraggedItem(e.target.textContent);
-        // console.log(draggedItem);
+        setInitialColumn(initialColumn);
+        console.log('Initial column is ' + initialColumn);
+        console.log('Drag item is ' + draggedItem);
     }
 
     function handleDragOver(e) {
         e.preventDefault();
     }
 
-    function handleDragEnter(column) {
-        setColumn(column);
-        console.log("Drag enter column is " + column);
+    function handleDragEnter(droppedColumn) {
+        setDroppedColumn(droppedColumn);
+        console.log("Drag entered column is " + droppedColumn);
     }
 
     function handleDrop(e) {
         e.preventDefault();
 
-        console.log('Dropped, draggedItem is ' + draggedItem);
-        console.log('Dropped, column is ' + column);
+        console.log('Dropped item is ' + draggedItem);
+        console.log('Dropped column is ' + droppedColumn);
+        console.log('Initial column is ' + initialColumn);
 
-        // Add item to dropped column
+        if (initialColumn === droppedColumn) {
+            console.log('Same column');
+            return;
+        }
+
+        // Add item to new array
         let _array;
-        switch (column) {
+        switch (droppedColumn) {
             // Set new copy of array
 
             case 'Backlog':
@@ -89,13 +98,44 @@ function  Board() {
                 break;
 
             case 'OnHold':
-                _array = [...completeListArray];
+                _array = [...onHoldListArray];
                 _array.unshift(draggedItem);
                 setOnHoldListArray(_array);
                 break;
         }
         
-        // TODO – Remove text from old array
+        // Remove item from old array
+        let _initialarray;
+        switch (initialColumn) {
+            case 'Backlog':
+                _initialarray = backlogListArray.filter(a => a !== draggedItem);
+                setBacklogListArray(_initialarray);
+                break;
+
+            case 'Progress':
+                _initialarray = progressListArray.filter(a => a !== draggedItem);
+                setProgressListArray(_initialarray);
+                break;
+
+            case 'Complete':
+                _initialarray = completeListArray.filter(a => a !== draggedItem);
+                setCompleteListArray(_initialarray);
+                break;
+
+            case 'OnHold':
+                _initialarray = onHoldListArray.filter(a => a !== draggedItem);
+                setOnHoldListArray(_initialarray);
+                break;
+        }
+
+
+        // TODO - Set Local Storage
+        // Arrays are in prev state still
+        // this.setLocalStorage();
+        // console.log(backlogListArray);
+        // console.log(progressListArray);
+        // console.log(completeListArray);
+        // console.log(backlogListArray);
     }
 
   return (
@@ -106,18 +146,26 @@ function  Board() {
                 Backlog
             </h5>
             <div className='max-h-96 overflow-y-auto'>
-                {backlogListArray.map((task, index) => {
+                { backlogListArray.length > 0 ? backlogListArray.map((task, index) => {
                     return (
                         <p key={index} className="cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-900 mb-3 font-normal dark:text-gray-400"
                             draggable
-                            onDragStart={handleDrag}
+                            onDragStart={e => handleDrag(e, 'Backlog')}
                             onDragOver={handleDragOver}
                             onDragEnter={() => handleDragEnter('Backlog')}
                             onDrop={handleDrop}>
                             {task}
                         </p>
                     )
-                })}
+                }) : 
+                        <p className="italic cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-600 mb-3 font-extralight dark:text-gray-400"
+                            onDragStart={e => handleDrag(e, 'Backlog')}
+                            onDragOver={handleDragOver}
+                            onDragEnter={() => handleDragEnter('Backlog')}
+                            onDrop={handleDrop}>
+                            Add item
+                        </p>
+                }
             </div>
             <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 + Add Item
@@ -125,23 +173,31 @@ function  Board() {
         </div>
  
         {/* Progress */}
-        <div className="sm:my-5 md:m-5 w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div className="m-5 w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <h5 className="select-none text-center py-1 bg-blue-500 rounded-lg mb-5 text-4xl font-bold tracking-tight text-gray-100 dark:text-white">
                 Progress
             </h5>
             <div className='max-h-96 overflow-y-auto'>
-                {progressListArray.map((task, index) => {
+                { progressListArray.length > 0 ? progressListArray.map((task, index) => {
                     return (
                         <p key={index} className="cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-900 mb-3 font-normal dark:text-gray-400"
                             draggable
-                            onDragStart={handleDrag}
+                            onDragStart={e => handleDrag(e, 'Progress')}
                             onDragOver={handleDragOver}
                             onDragEnter={() => handleDragEnter('Progress')}
                             onDrop={handleDrop}>
                             {task}
                         </p>
                     )
-                })}
+                }) : 
+                        <p className="italic cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-600 mb-3 font-extralight dark:text-gray-400"
+                            onDragStart={e => handleDrag(e, 'Progress')}
+                            onDragOver={handleDragOver}
+                            onDragEnter={() => handleDragEnter('Progress')}
+                            onDrop={handleDrop}>
+                            Add item
+                        </p>
+                }
             </div>
             <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 + Add Item
@@ -149,23 +205,31 @@ function  Board() {
         </div>
  
         {/* Complete */}
-        <div className="sm:my-5 md:m-5 w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div className="m-5 w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <h5 className="select-none text-center py-1 bg-green-500 rounded-lg mb-5 text-4xl font-bold tracking-tight text-gray-100 dark:text-white">
                 Complete
             </h5>
             <div className='max-h-96 overflow-y-auto'>
-                {completeListArray.map((task, index) => {
+                { completeListArray.length > 0 ? completeListArray.map((task, index) => {
                     return (
                         <p key={index} className="cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-900 mb-3 font-normal dark:text-gray-400"
                             draggable
-                            onDragStart={handleDrag}
+                            onDragStart={e => handleDrag(e, 'Complete')}
                             onDragOver={handleDragOver}
                             onDragEnter={() => handleDragEnter('Complete')}
                             onDrop={handleDrop}>
                             {task}
                         </p>
                     )
-                })}
+                }) : 
+                        <p className="italic cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-600 mb-3 font-extralight dark:text-gray-400"
+                            onDragStart={e => handleDrag(e, 'Complete')}
+                            onDragOver={handleDragOver}
+                            onDragEnter={() => handleDragEnter('Complete')}
+                            onDrop={handleDrop}>
+                            Add item
+                        </p>
+                }
             </div>
             <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 + Add Item
@@ -173,23 +237,31 @@ function  Board() {
         </div>
  
         {/* On Hold */}
-        <div className="sm:my-5 md:m-5 w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div className="m-5 w-screen max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <h5 className="select-none text-center py-1 bg-red-500 rounded-lg mb-5 text-4xl font-bold tracking-tight text-gray-100 dark:text-white">
                 On Hold
             </h5>
             <div className='max-h-96 overflow-y-auto'>
-                {onHoldListArray.map((task, index) => {
+                { onHoldListArray.length > 0 ? onHoldListArray.map((task, index) => {
                         return (
                             <p key={index} className="cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-900 mb-3 font-normal dark:text-gray-400"
                                 draggable
-                                onDragStart={handleDrag}
+                                onDragStart={e => handleDrag(e, 'OnHold')}
                                 onDragOver={handleDragOver}
                                 onDragEnter={() => handleDragEnter('OnHold')}
                                 onDrop={handleDrop}>
                                 {task}
                             </p>
                         )
-                })}
+                    }) : 
+                            <p className="italic cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-600 mb-3 font-extralight dark:text-gray-400"
+                                onDragStart={e => handleDrag(e, 'OnHold')}
+                                onDragOver={handleDragOver}
+                                onDragEnter={() => handleDragEnter('OnHold')}
+                                onDrop={handleDrop}>
+                                Add item
+                            </p>
+                    }
             </div>
             <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 + Add Item
