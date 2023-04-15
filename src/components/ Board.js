@@ -32,25 +32,62 @@ function  Board() {
             setCompleteListArray(['Take a nap', 'Getting things done']);
             setOnHoldListArray(['Being weird']);
             
-            setLocalStorage();
+            // TODO
+            // setLocalStorage();
         }
     }
 
-    useEffect (() => {
-        getLocalStorage();
-    }, []);
+    function addItemToArray(column) {
+        switch (column) {
+            // Set new copy of array
 
+            case 'Backlog':
+                setBacklogListArray(prevArray => [newItem, ...prevArray]); // Add from front
+                break;
+
+            case 'Progress':
+                setProgressListArray(prevArray => [newItem, ...prevArray]); // Add from front
+                break;
+
+            case 'Complete':
+                setCompleteListArray(prevArray => [newItem, ...prevArray]); // Add from front
+                break;
+
+            case 'OnHold':
+                setOnHoldListArray(prevArray => [newItem, ...prevArray]); // Add from front
+                break;
+        }
+    }
 
     // Drag and Drop (4) functionality
-    const [draggedItem, setDraggedItem] = useState(null);
+    const [newItem, setNewItem] = useState(null);
     const [initialColumn, setInitialColumn] = useState(null);
     const [droppedColumn, setDroppedColumn] = useState(null);
 
+    // User interaction functionality
+    const [addItemColumn, setAddItemColumn] = useState(null);
+    
+    
+    useEffect (() => {
+        // When page starts up
+        if (newItem === null) {
+            getLocalStorage();
+        }
+
+        if (newItem && initialColumn===null && droppedColumn===null) {
+             console.log(newItem);
+             
+             addItemToArray(addItemColumn);
+        }
+
+    }, [newItem]);
+
+
     function handleDrag(e, initialColumn) {
-        setDraggedItem(e.target.textContent);
+        setNewItem(e.target.textContent);
         setInitialColumn(initialColumn);
-        console.log('Initial column is ' + initialColumn);
-        console.log('Drag item is ' + draggedItem);
+        // console.log('Initial column is ' + initialColumn);
+        // console.log('Drag item is ' + newItem);
     }
 
     function handleDragOver(e) {
@@ -59,15 +96,15 @@ function  Board() {
 
     function handleDragEnter(droppedColumn) {
         setDroppedColumn(droppedColumn);
-        console.log("Drag entered column is " + droppedColumn);
+        // console.log("Drag entered column is " + droppedColumn);
     }
 
     function handleDrop(e) {
         e.preventDefault();
 
-        console.log('Dropped item is ' + draggedItem);
-        console.log('Dropped column is ' + droppedColumn);
-        console.log('Initial column is ' + initialColumn);
+        // console.log('Dropped item is ' + newItem);
+        // console.log('Dropped column is ' + droppedColumn);
+        // console.log('Initial column is ' + initialColumn);
 
         if (initialColumn === droppedColumn) {
             console.log('Same column');
@@ -75,67 +112,58 @@ function  Board() {
         }
 
         // Add item to new array
-        let _array;
-        switch (droppedColumn) {
-            // Set new copy of array
-
-            case 'Backlog':
-                _array = [...backlogListArray];
-                _array.unshift(draggedItem);
-                setBacklogListArray(_array);
-                break;
-
-            case 'Progress':
-                _array = [...progressListArray];
-                _array.unshift(draggedItem);
-                setProgressListArray(_array);
-                break;
-
-            case 'Complete':
-                _array = [...completeListArray];
-                _array.unshift(draggedItem);
-                setCompleteListArray(_array);
-                break;
-
-            case 'OnHold':
-                _array = [...onHoldListArray];
-                _array.unshift(draggedItem);
-                setOnHoldListArray(_array);
-                break;
-        }
+        addItemToArray(droppedColumn);
         
         // Remove item from old array
         let _initialarray;
         switch (initialColumn) {
             case 'Backlog':
-                _initialarray = backlogListArray.filter(a => a !== draggedItem);
+                _initialarray = backlogListArray.filter(a => a !== newItem);
                 setBacklogListArray(_initialarray);
                 break;
 
             case 'Progress':
-                _initialarray = progressListArray.filter(a => a !== draggedItem);
+                _initialarray = progressListArray.filter(a => a !== newItem);
                 setProgressListArray(_initialarray);
                 break;
 
             case 'Complete':
-                _initialarray = completeListArray.filter(a => a !== draggedItem);
+                _initialarray = completeListArray.filter(a => a !== newItem);
                 setCompleteListArray(_initialarray);
                 break;
 
             case 'OnHold':
-                _initialarray = onHoldListArray.filter(a => a !== draggedItem);
+                _initialarray = onHoldListArray.filter(a => a !== newItem);
                 setOnHoldListArray(_initialarray);
                 break;
         }
 
 
         // TODO - Set Local Storage
-        // Arrays are in prev state still
-        // this.setLocalStorage();
+        // setLocalStorage();
+        
         // console.log(backlogListArray);
         // console.log(progressListArray);
         // console.log(completeListArray);
-        // console.log(backlogListArray);
+        // console.log(onHoldListArray);
+    }
+ 
+
+    function handlerAddItem (column) {
+        // Not a drag function, but a user interaction
+        setInitialColumn(null);
+        setDroppedColumn(null);
+        setAddItemColumn(column);
+
+        let newItem = prompt(`Add Item to ${column}`);
+        if (!newItem) return;
+        
+        console.log(initialColumn);
+        console.log(droppedColumn);
+        setNewItem(newItem);
+        // Triggering useEffect
+
+        // addItemToArray(column);
     }
 
   return (
@@ -158,16 +186,16 @@ function  Board() {
                         </p>
                     )
                 }) : 
-                        <p className="italic cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-600 mb-3 font-extralight dark:text-gray-400"
+                        <p className="italic cursor-normal select-none mb-5 p-2 rounded-lg bg-gray-200 text-gray-600 mb-3 font-extralight dark:text-gray-400"
                             onDragStart={e => handleDrag(e, 'Backlog')}
                             onDragOver={handleDragOver}
                             onDragEnter={() => handleDragEnter('Backlog')}
                             onDrop={handleDrop}>
-                            Add item
+                                No item
                         </p>
                 }
             </div>
-            <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button onClick={() => handlerAddItem('Backlog')} className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 + Add Item
             </button>
         </div>
@@ -190,16 +218,16 @@ function  Board() {
                         </p>
                     )
                 }) : 
-                        <p className="italic cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-600 mb-3 font-extralight dark:text-gray-400"
+                        <p className="italic cursor-normal select-none mb-5 p-2 rounded-lg bg-gray-200 text-gray-600 mb-3 font-extralight dark:text-gray-400"
                             onDragStart={e => handleDrag(e, 'Progress')}
                             onDragOver={handleDragOver}
                             onDragEnter={() => handleDragEnter('Progress')}
                             onDrop={handleDrop}>
-                            Add item
+                                No item
                         </p>
                 }
             </div>
-            <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button onClick={() => handlerAddItem('Progress')} className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 + Add Item
             </button>
         </div>
@@ -222,16 +250,16 @@ function  Board() {
                         </p>
                     )
                 }) : 
-                        <p className="italic cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-600 mb-3 font-extralight dark:text-gray-400"
+                        <p className="italic cursor-normal select-none mb-5 p-2 rounded-lg bg-gray-200 text-gray-600 mb-3 font-extralight dark:text-gray-400"
                             onDragStart={e => handleDrag(e, 'Complete')}
                             onDragOver={handleDragOver}
                             onDragEnter={() => handleDragEnter('Complete')}
                             onDrop={handleDrop}>
-                            Add item
+                                No item
                         </p>
                 }
             </div>
-            <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button onClick={() => handlerAddItem('Complete')} className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 + Add Item
             </button>
         </div>
@@ -254,16 +282,16 @@ function  Board() {
                             </p>
                         )
                     }) : 
-                            <p className="italic cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-600 mb-3 font-extralight dark:text-gray-400"
+                            <p className="italic cursor-normal select-none mb-5 p-2 rounded-lg bg-gray-200 text-gray-600 mb-3 font-extralight dark:text-gray-400"
                                 onDragStart={e => handleDrag(e, 'OnHold')}
                                 onDragOver={handleDragOver}
                                 onDragEnter={() => handleDragEnter('OnHold')}
                                 onDrop={handleDrop}>
-                                Add item
+                                    No item
                             </p>
                     }
             </div>
-            <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button onClick={() => handlerAddItem('OnHold')} className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 + Add Item
             </button>
         </div>
