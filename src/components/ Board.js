@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import {FaEdit} from 'react-icons/fa';
 
 function  Board() {
 
@@ -63,25 +64,6 @@ function  Board() {
     const [newItem, setNewItem] = useState(null);
     const [initialColumn, setInitialColumn] = useState(null);
     const [droppedColumn, setDroppedColumn] = useState(null);
-
-    // User interaction functionality
-    const [addItemColumn, setAddItemColumn] = useState(null);
-    
-    
-    useEffect (() => {
-        // When page starts up
-        if (newItem === null) {
-            getLocalStorage();
-        }
-
-        if (newItem && initialColumn===null && droppedColumn===null) {
-             console.log(newItem);
-             
-             addItemToArray(addItemColumn);
-        }
-
-    }, [newItem]);
-
 
     function handleDrag(e, initialColumn) {
         setNewItem(e.target.textContent);
@@ -148,7 +130,11 @@ function  Board() {
         // console.log(onHoldListArray);
     }
  
+    // User interaction (CRUD) functionality
+    const [addItemColumn, setAddItemColumn] = useState(null);
+    // const [editModeEnabled, setEditModeEnabled] = useState(false);
 
+    
     function handlerAddItem (column) {
         // Not a drag function, but a user interaction
         setInitialColumn(null);
@@ -166,6 +152,33 @@ function  Board() {
         // addItemToArray(column);
     }
 
+    function handleEditClick(e) {
+
+        if (e.detail == 2) {
+            // console.log("Double click");
+            window.prompt('Edit item:', e.target.textContent)
+            // setEditModeEnabled(!editModeEnabled);
+            
+            // TODO - Edit
+            if (!e.target.textContent) return;
+        }
+      }
+    
+
+    useEffect (() => {
+        // When page starts up
+        if (newItem === null) {
+            getLocalStorage();
+        }
+
+        if (newItem && initialColumn===null && droppedColumn===null) {
+             console.log(newItem);
+             
+             addItemToArray(addItemColumn);
+        }
+
+    }, [newItem]);
+
   return (
     <div className='flex justify-evenly items-start flex-wrap'>
         {/* Backlog */}
@@ -176,13 +189,19 @@ function  Board() {
             <div className='max-h-96 overflow-y-auto'>
                 { backlogListArray.length > 0 ? backlogListArray.map((task, index) => {
                     return (
-                        <p key={index} className="cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-900 mb-3 font-normal dark:text-gray-400"
+                        <p key={index} className="relative cursor-pointer mb-5 p-2 rounded-lg bg-gray-200 text-gray-900 mb-3 font-normal dark:text-gray-400"
                             draggable
                             onDragStart={e => handleDrag(e, 'Backlog')}
                             onDragOver={handleDragOver}
                             onDragEnter={() => handleDragEnter('Backlog')}
-                            onDrop={handleDrop}>
+                            onDrop={handleDrop}
+                           
+                            // TODO - EDIT
+                            onClick={e => handleEditClick(e)}
+                            // contentEditable={editModeEnabled}
+                            >
                             {task}
+                            {/* <FaEdit className='absolute top-0 right-0 text-green-400' /> */}
                         </p>
                     )
                 }) : 
