@@ -12,7 +12,9 @@ function App() {
       <Board />
   
       {/* Photo by <a href="https://unsplash.com/it/@christopher__burns?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Christopher Burns</a> on <a href="https://unsplash.com/wallpapers/cool/abstract?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a> */}
-      {/* Photo by <a href="https://unsplash.com/fr/@maximalfocus?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Maximalfocus</a> on <a href="https://unsplash.com/wallpapers/cool/abstract?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a> */}
+      <footer className='absolute right-0 bottom-0 text-s text-white font-thin'>Photo by <a href="https://unsplash.com/fr/@maximalfocus?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Maximalfocus</a>
+      </footer>
+      
     </>
   );
 }

@@ -60,6 +60,26 @@ function  Board() {
         }
     }
 
+    function removeItemFromArray(column, text) {
+        switch (column) {
+            case 'Backlog':
+                setBacklogListArray(prevArray => prevArray.filter(a => a !== text));
+                break;
+
+            case 'Progress':
+                setProgressListArray(prevArray => prevArray.filter(a => a !== text));
+                break;
+
+            case 'Complete':
+                setCompleteListArray(prevArray => prevArray.filter(a => a !== text));
+                break;
+
+            case 'OnHold':
+                setOnHoldListArray(prevArray => prevArray.filter(a => a !== text));
+                break;
+        }
+    }
+
     // Drag and Drop (4) functionality
     const [newItem, setNewItem] = useState(null);
     const [initialColumn, setInitialColumn] = useState(null);
@@ -84,50 +104,13 @@ function  Board() {
     function handleDrop(e) {
         e.preventDefault();
 
-        // console.log('Dropped item is ' + newItem);
-        // console.log('Dropped column is ' + droppedColumn);
-        // console.log('Initial column is ' + initialColumn);
-
         if (initialColumn === droppedColumn) {
-            console.log('Same column');
+            // Error - Same column
             return;
         }
 
-        // Add item to new array
         addItemToArray(droppedColumn);
-        
-        // Remove item from old array
-        let _initialarray;
-        switch (initialColumn) {
-            case 'Backlog':
-                _initialarray = backlogListArray.filter(a => a !== newItem);
-                setBacklogListArray(_initialarray);
-                break;
-
-            case 'Progress':
-                _initialarray = progressListArray.filter(a => a !== newItem);
-                setProgressListArray(_initialarray);
-                break;
-
-            case 'Complete':
-                _initialarray = completeListArray.filter(a => a !== newItem);
-                setCompleteListArray(_initialarray);
-                break;
-
-            case 'OnHold':
-                _initialarray = onHoldListArray.filter(a => a !== newItem);
-                setOnHoldListArray(_initialarray);
-                break;
-        }
-
-
-        // TODO - Set Local Storage
-        // setLocalStorage();
-        
-        // console.log(backlogListArray);
-        // console.log(progressListArray);
-        // console.log(completeListArray);
-        // console.log(onHoldListArray);
+        removeItemFromArray(initialColumn, newItem);
     }
  
     // User interaction (CRUD) functionality
@@ -152,15 +135,38 @@ function  Board() {
         // addItemToArray(column);
     }
 
-    function handleEditClick(e) {
-
+    function handleEditClick(e, column, index) {
+        
+        // Double Click
         if (e.detail == 2) {
-            // console.log("Double click");
-            window.prompt('Edit item:', e.target.textContent)
-            // setEditModeEnabled(!editModeEnabled);
+            let oldText = e.target.textContent;
+            let newText = window.prompt('Edit item:', oldText)
             
-            // TODO - Edit
-            if (!e.target.textContent) return;
+            if (newText && oldText !== newText) {
+                // UPDATE – Replacing oldText with newText
+                switch (column) {
+                    case 'Backlog':
+                        setBacklogListArray(prevArray => prevArray.map(str => str.replace(oldText, newText)));
+                        break;
+        
+                    case 'Progress':
+                        setProgressListArray(prevArray => prevArray.map(str => str.replace(oldText, newText)));
+                        break;
+        
+                    case 'Complete':
+                        setCompleteListArray(prevArray => prevArray.map(str => str.replace(oldText, newText)));
+                        break;
+        
+                    case 'OnHold':
+                            setOnHoldListArray(prevArray => prevArray.map(str => str.replace(oldText, newText)));
+                        break;
+                }
+            } else if (!newText) {
+                // DELETE - When there's no text
+                removeItemFromArray(column, oldText);
+            } else {
+                return
+            }
         }
       }
     
@@ -196,9 +202,7 @@ function  Board() {
                             onDragEnter={() => handleDragEnter('Backlog')}
                             onDrop={handleDrop}
                            
-                            // TODO - EDIT
-                            onClick={e => handleEditClick(e)}
-                            // contentEditable={editModeEnabled}
+                            onClick={e => handleEditClick(e,'Backlog', index)}
                             >
                             {task}
                             {/* <FaEdit className='absolute top-0 right-0 text-green-400' /> */}
@@ -232,7 +236,10 @@ function  Board() {
                             onDragStart={e => handleDrag(e, 'Progress')}
                             onDragOver={handleDragOver}
                             onDragEnter={() => handleDragEnter('Progress')}
-                            onDrop={handleDrop}>
+                            onDrop={handleDrop}
+                            
+                            onClick={e => handleEditClick(e,'Progress', index)}
+                            >
                             {task}
                         </p>
                     )
@@ -264,7 +271,10 @@ function  Board() {
                             onDragStart={e => handleDrag(e, 'Complete')}
                             onDragOver={handleDragOver}
                             onDragEnter={() => handleDragEnter('Complete')}
-                            onDrop={handleDrop}>
+                            onDrop={handleDrop}
+                            
+                            onClick={e => handleEditClick(e,'Complete', index)}
+                            >
                             {task}
                         </p>
                     )
@@ -296,7 +306,10 @@ function  Board() {
                                 onDragStart={e => handleDrag(e, 'OnHold')}
                                 onDragOver={handleDragOver}
                                 onDragEnter={() => handleDragEnter('OnHold')}
-                                onDrop={handleDrop}>
+                                onDrop={handleDrop}
+                                
+                                onClick={e => handleEditClick(e,'OnHold', index)}
+                                >
                                 {task}
                             </p>
                         )
