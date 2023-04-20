@@ -135,7 +135,7 @@ function  Board() {
         // addItemToArray(column);
     }
 
-    function handleEditClick(e, column, index) {
+    function handleEditClick(e, column) {
         
         // Double Click
         if (e.detail == 2) {
@@ -161,8 +161,9 @@ function  Board() {
                             setOnHoldListArray(prevArray => prevArray.map(str => str.replace(oldText, newText)));
                         break;
                 }
-            } else if (!newText) {
+            } else if (!newText && newText !== null) {
                 // DELETE - When there's no text
+                // Cancel returns null, while Delete returns ''
                 removeItemFromArray(column, oldText);
             } else {
                 return
@@ -202,7 +203,7 @@ function  Board() {
                             onDragEnter={() => handleDragEnter('Backlog')}
                             onDrop={handleDrop}
                            
-                            onClick={e => handleEditClick(e,'Backlog', index)}
+                            onClick={e => handleEditClick(e,'Backlog')}
                             >
                             {task}
                             {/* <FaEdit className='absolute top-0 right-0 text-green-400' /> */}
@@ -238,7 +239,7 @@ function  Board() {
                             onDragEnter={() => handleDragEnter('Progress')}
                             onDrop={handleDrop}
                             
-                            onClick={e => handleEditClick(e,'Progress', index)}
+                            onClick={e => handleEditClick(e,'Progress')}
                             >
                             {task}
                         </p>
@@ -273,7 +274,7 @@ function  Board() {
                             onDragEnter={() => handleDragEnter('Complete')}
                             onDrop={handleDrop}
                             
-                            onClick={e => handleEditClick(e,'Complete', index)}
+                            onClick={e => handleEditClick(e,'Complete')}
                             >
                             {task}
                         </p>
@@ -308,7 +309,7 @@ function  Board() {
                                 onDragEnter={() => handleDragEnter('OnHold')}
                                 onDrop={handleDrop}
                                 
-                                onClick={e => handleEditClick(e,'OnHold', index)}
+                                onClick={e => handleEditClick(e,'OnHold')}
                                 >
                                 {task}
                             </p>
