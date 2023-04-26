@@ -1,6 +1,6 @@
-# 😀 Welome to KANBAN by Darren Chua
+# 😀 Welcome to [KANBAN](https://kanban-e5mn.onrender.com/) by Darren Chua
 
-This project was created for personal use with React + TailwindCSS. Check it out at: [KANBAN](https://kanban-e5mn.onrender.com/)
+This project was created for personal use with React + TailwindCSS.
 
 ![Preview](public/MyImages/preview.png)
 
